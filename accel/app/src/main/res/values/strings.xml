@@ -1,6 +1,14 @@
 <resources>
-    <string name="app_name">Accelorometer</string>
+    <string name="app_name">VEGA</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="Plot">Plot</string>
+    <string name="Instruction">Please Follow these Instructions for perfect Execution :\n\n
+        1) CLICK Start Button and wait for data Collection.\n\n
+        2) When done with data collection CLICK Stop Button.\n\n
+        3) To plot the graph CLICK Plot Button.</string>
+    <color name="main_bg">#7f6b44</color>
+    <color name="white">#FFFF</color>
+    <color name="textcolor">#FFFFFF</color>
+    <color name="btnColor">#483103</color>
 </resources>

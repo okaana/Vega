@@ -8,26 +8,23 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     String text;
-    TextView xValue,yValue,zValue,tView;
+    TextView xValue,yValue,zValue;
     Button btn_start,btn_stop,btn_plot;
-    int flag=0,count;
+    int flag=0;
     File file;
     FileWriter csvWriter = null;
     String filename = "xyz.csv";
-    FileOutputStream outputStream;
     private static final String TAG = "MainActivity";
     private  SensorManager sensorManager;
     Sensor accelerometer;
@@ -44,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btn_stop = findViewById(R.id.stop_btn);
         btn_plot = findViewById(R.id.plot_btn);
         btn_plot.setEnabled(false);
-        tView = findViewById(R.id.test_view);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -59,9 +55,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             e.printStackTrace();
         }
         if(file.exists()){
-            Toast.makeText(getApplicationContext(),"File Exist",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"File Exist",Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(getApplicationContext(),"File doesnt Exist",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"File doesnt Exist. Making new file",Toast.LENGTH_SHORT).show();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 flag=1;
-                count=0;
                 btn_plot.setEnabled(true);
             }
         });
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 flag=0;
-                count=1;
             }
         });
         btn_plot.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     e.printStackTrace();
                 }
                 startActivity(next);
+                finish();
             }
         });
     }
@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, "onSensorChanged: X :" + event.values[0] + " Y :" + event.values[1] + " Z :" + event.values[2]);
         if(flag==1){
             xValue.setText("xValue : " + event.values[0]);
             yValue.setText("yValue : " + event.values[1]);
@@ -115,10 +114,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             text = Float.toString(event.values[0]);
             text = text + "," + Float.toString(event.values[1]);
             text = text + "," + Float.toString(event.values[2]) + "\n";
-
-            //Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT).show()
-            tView.setText(text);
-
             try {
                 csvWriter.append(text);
                 csvWriter.flush();

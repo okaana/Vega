@@ -1,11 +1,17 @@
 package bg.awesome.sc.accelorometer_test1;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -29,17 +35,15 @@ public class GraphActivity extends AppCompatActivity {
     ArrayList<Float> acc_z_vals = new ArrayList<Float>();
     private LineGraphSeries<DataPoint> x_series,y_series,z_series;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //citation : How to Parse CSV or Microsoft Excel file in Android Studio with example(https://www.youtube.com/watch?v=PmUI8NZc7JI),https://www.dev2qa.com/android-read-write-internal-storage-file-example/
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+
         String str,data[];
-
-
-
-
         String dir = getApplicationContext().getExternalFilesDir("").toString();
         filename = dir +"/"+filename;
         file = new File(filename);
@@ -59,13 +63,19 @@ public class GraphActivity extends AppCompatActivity {
                     acc_y_vals.add(Float.parseFloat(data[1]));
                     acc_z_vals.add(Float.parseFloat(data[2]));
                     dataSize = dataSize + 1;
-                    //series.appendData(new DataPoint(graph_x,dataSize),true,500);
-                    //Toast.makeText(getApplicationContext(),data[0] + " " + data[1] + " " + data[2],Toast.LENGTH_SHORT).show();
                 }
                 //citation:Android Beginner Tutorial #17 - Android Beginner Graphing(https://www.youtube.com/watch?v=VriiDn676PQ)
                 float x=0,y,z;
                 int datapoints = dataSize;
                 GraphView graph = (GraphView) findViewById(R.id.graph);
+                graph.setBackgroundColor(getResources().getColor(R.color.main_bg));
+                graph.setPadding(10,10,10,10);
+                GridLabelRenderer gridLabelRenderer = graph.getGridLabelRenderer();
+                gridLabelRenderer.setGridColor(getColor(R.color.white));
+                gridLabelRenderer.setHorizontalLabelsColor(getColor(R.color.white));
+                gridLabelRenderer.setVerticalLabelsColor(getColor(R.color.white));
+
+
                 x_series = new LineGraphSeries<>();
                 y_series = new LineGraphSeries<>();
                 z_series = new LineGraphSeries<>();
@@ -85,13 +95,13 @@ public class GraphActivity extends AppCompatActivity {
                 Paint y_paint = new Paint();
                 Paint z_paint = new Paint();
                 x_paint.setStyle(Paint.Style.STROKE);
-                x_paint.setStrokeWidth(10);
+                x_paint.setStrokeWidth(6);
                 x_paint.setColor(Color.RED);
                 y_paint.setStyle(Paint.Style.STROKE);
-                y_paint.setStrokeWidth(10);
-                y_paint.setColor(Color.BLUE);
+                y_paint.setStrokeWidth(6);
+                y_paint.setColor(Color.YELLOW);
                 z_paint.setStyle(Paint.Style.STROKE);
-                z_paint.setStrokeWidth(10);
+                z_paint.setStrokeWidth(6);
                 z_paint.setColor(Color.GREEN);
                 x_series.setCustomPaint(x_paint);
                 y_series.setCustomPaint(y_paint);
@@ -106,12 +116,12 @@ public class GraphActivity extends AppCompatActivity {
                 x_series.setTitle("X");
                 x_series.setColor(Color.RED);
                 y_series.setTitle("Y");
-                y_series.setColor(Color.BLUE);
+                y_series.setColor(Color.YELLOW);
                 z_series.setTitle("Z");
                 z_series.setColor(Color.GREEN);
 
 
-                graph.addSeries(x_series);
+                 graph.addSeries(x_series);
                  graph.addSeries(y_series);
                  graph.addSeries(z_series);
                 }catch (Exception e){
@@ -123,5 +133,11 @@ public class GraphActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onBackPressed(){
+        Intent first = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(first);
+        finish();
     }
 }
